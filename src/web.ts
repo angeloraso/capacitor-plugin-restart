@@ -3,8 +3,10 @@ import { WebPlugin } from '@capacitor/core';
 import type { RestartPlugin } from './definitions';
 
 export class RestartWeb extends WebPlugin implements RestartPlugin {
-  async echo(options: { value: string }): Promise<{ value: string }> {
-    console.log('ECHO', options);
-    return options;
+  async enable(): Promise<void>{
+    throw this.unimplemented('Not implemented on web.');
+  }
+  async disable(): Promise<void>{
+    throw this.unimplemented('Not implemented on web.');
   }
 }
