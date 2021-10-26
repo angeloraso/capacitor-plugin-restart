@@ -1,0 +1,11 @@
+package com.angeloraso.plugins.restart;
+
+import android.util.Log;
+
+public class Restart {
+
+    public String echo(String value) {
+        Log.i("Echo", value);
+        return value;
+    }
+}
