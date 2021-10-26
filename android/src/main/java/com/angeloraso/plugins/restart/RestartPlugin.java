@@ -1,18 +1,20 @@
 package com.angeloraso.plugins.restart;
 
 import android.content.Context;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
+import java.util.Timer;
+import java.util.TimerTask;
 
 @CapacitorPlugin(name = "Restart")
 public class RestartPlugin extends Plugin {
 
     private Restart restart;
+
+    private Restart test = null;
 
     public void load() {
         AppCompatActivity activity = getActivity();
@@ -26,18 +28,22 @@ public class RestartPlugin extends Plugin {
         call.resolve();
     }
 
-    @PluginMethod
-    public void disable(PluginCall call) {
-        restart.disable();
-        call.resolve();
+    /**
+     * Called when the activity is becoming visible to the user
+     */
+    @Override
+    protected void handleOnStart() {
+        restart.onStart();
     }
 
     /**
-     * Called when the activity will start interacting with the user.
+     * Called when the activity is no longer visible to the user.
      */
     @Override
-    public void handleOnResume() {
-        restart.onResume();
+    public void handleOnStop() {
+        if (getActivity().isFinishing() || getActivity().isDestroyed()) {
+            restart.onDestroy();
+        }
     }
 
     /**
@@ -45,6 +51,8 @@ public class RestartPlugin extends Plugin {
      */
     @Override
     public void handleOnDestroy() {
-        restart.onDestroy();
+        if (getActivity().isFinishing() || getActivity().isDestroyed()) {
+            restart.onDestroy();
+        }
     }
 }

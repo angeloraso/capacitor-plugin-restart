@@ -1,11 +1,13 @@
 package com.angeloraso.plugins.restart;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 public class Restart {
+
     private final Context mContext;
     private final AppCompatActivity mActivity;
     private RestartSettings mSettings;
@@ -29,7 +31,7 @@ public class Restart {
         mSettings.setEnabled(false);
     }
 
-    public void onResume() {
+    public void onStart() {
         if (!isEnabled() || !mRestarting) {
             return;
         }
@@ -44,7 +46,7 @@ public class Restart {
         }
 
         mRestarting = true;
-        openApp();
+        restart();
     }
 
     private void moveToBackground() {
@@ -57,8 +59,17 @@ public class Restart {
         }
     }
 
-    private void openApp() {
-        Intent intent = mContext.getPackageManager().getLaunchIntentForPackage(mContext.getPackageName());
-        mActivity.startActivity(intent);
+    private void restart() {
+        Intent mStartActivity = new Intent(mContext, mActivity.getClass());
+        int mPendingIntentId = 123456;
+        PendingIntent mPendingIntent = PendingIntent.getActivity(
+            mContext,
+            mPendingIntentId,
+            mStartActivity,
+            PendingIntent.FLAG_CANCEL_CURRENT
+        );
+        AlarmManager mgr = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
+        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+        System.exit(0);
     }
 }
